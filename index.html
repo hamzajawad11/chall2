@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Honey Encryption Demo</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #ff6b6b, #feca57);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .header p { font-size: 1.1rem; opacity: 0.9; }
+        .content { padding: 30px; }
+        .section { 
+            margin-bottom: 30px; 
+            padding: 25px;
+            border: 2px solid #f0f0f0;
+            border-radius: 10px;
+            background: #fafafa;
+        }
+        .section h2 { 
+            color: #333; 
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+        .form-group { margin-bottom: 15px; }
+        label { 
+            display: block; 
+            margin-bottom: 5px; 
+            font-weight: 600;
+            color: #555;
+        }
+        input, select, textarea { 
+            width: 100%; 
+            padding: 12px; 
+            border: 2px solid #ddd; 
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        button { 
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white; 
+            padding: 12px 25px; 
+            border: none; 
+            border-radius: 6px;
+            cursor: pointer; 
+            font-size: 16px;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+        button:hover { transform: translateY(-2px); }
+        .result { 
+            margin-top: 15px; 
+            padding: 15px; 
+            background: #e8f5e8; 
+            border-left: 4px solid #4caf50;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .error { 
+            background: #ffebee; 
+            border-left-color: #f44336; 
+            color: #c62828;
+        }
+        .demo-section {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+        }
+        .demo-section h2 { color: white; }
+        .demo-result {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 6px;
+        }
+        .grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 20px; 
+        }
+        @media (max-width: 768px) {
+            .grid { grid-template-columns: 1fr; }
+            .header h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍯 Honey Encryption Demo</h1>
+            <p>Demonstrating cryptographic deception against brute-force attacks</p>
+        </div>
+        
+        <div class="content">
+            <div class="grid">
+                <div class="section">
+                    <h2>🔐 Encrypt Message</h2>
+                    <div class="form-group">
+                        <label>Message Type:</label>
+                        <select id="encryptType">
+                            <option value="credit_card">Credit Card Number</option>
+                            <option value="password">Password</option>
+                            <option value="biometric">Biometric Template</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Message:</label>
+                        <input type="text" id="encryptMessage" placeholder="Enter message to encrypt">
+                    </div>
+                    <div class="form-group">
+                        <label>Password:</label>
+                        <input type="password" id="encryptPassword" placeholder="Enter encryption password">
+                    </div>
+                    <button onclick="encryptMessage()">Encrypt</button>
+                    <div id="encryptResult"></div>
+                </div>
+                
+                <div class="section">
+                    <h2>🔓 Decrypt Message</h2>
+                    <div class="form-group">
+                        <label>Message Type:</label>
+                        <select id="decryptType">
+                            <option value="credit_card">Credit Card Number</option>
+                            <option value="password">Password</option>
+                            <option value="biometric">Biometric Template</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Ciphertext:</label>
+                        <textarea id="decryptCiphertext" rows="3" placeholder="Enter ciphertext to decrypt"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Password:</label>
+                        <input type="password" id="decryptPassword" placeholder="Enter decryption password">
+                    </div>
+                    <button onclick="decryptMessage()">Decrypt</button>
+                    <div id="decryptResult"></div>
+                </div>
+            </div>
+            
+            <div class="section demo-section">
+                <h2>🎭 Live Demo - Multiple Password Attempts</h2>
+                <p style="margin-bottom: 15px;">Watch how Honey Encryption produces different plausible results for wrong passwords!</p>
+                <button onclick="runDemo()" style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3);">Run Demo</button>
+                <div id="demoResult"></div>
+            </div>
+            
+            <div class="section">
+                <h2>📊 Distribution Analysis</h2>
+                <p style="margin-bottom: 15px;">Analyze the probability distributions used by the DTEs:</p>
+                <button onclick="analyzeDistributions()">Analyze Distributions</button>
+                <div id="analysisResult"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showResult(elementId, message, isError = false) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="result ${isError ? 'error' : ''}">${message}</div>`;
+        }
+
+        async function encryptMessage() {
+            const type = document.getElementById('encryptType').value;
+            const message = document.getElementById('encryptMessage').value;
+            const password = document.getElementById('encryptPassword').value;
+            
+            if (!message || !password) {
+                showResult('encryptResult', 'Please fill in all fields', true);
+                return;
+            }
+            
+            try {
+                const response = await fetch('/encrypt', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ type, message, password })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showResult('encryptResult', `Encrypted successfully!<br><strong>Ciphertext:</strong> ${data.ciphertext}`);
+                    document.getElementById('decryptCiphertext').value = data.ciphertext;
+                    document.getElementById('decryptType').value = type;
+                } else {
+                    showResult('encryptResult', data.error, true);
+                }
+            } catch (error) {
+                showResult('encryptResult', 'Network error: ' + error.message, true);
+            }
+        }
+        
+        async function decryptMessage() {
+            const type = document.getElementById('decryptType').value;
+            const ciphertext = document.getElementById('decryptCiphertext').value;
+            const password = document.getElementById('decryptPassword').value;
+            
+            if (!ciphertext || !password) {
+                showResult('decryptResult', 'Please fill in all fields', true);
+                return;
+            }
+            
+            try {
+                const response = await fetch('/decrypt', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ type, ciphertext, password })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showResult('decryptResult', `Decrypted message: <strong>${data.decrypted_message}</strong>`);
+                } else {
+                    showResult('decryptResult', data.error, true);
+                }
+            } catch (error) {
+                showResult('decryptResult', 'Network error: ' + error.message, true);
+            }
+        }
+        
+        async function runDemo() {
+            try {
+                const response = await fetch('/demo');
+                const data = await response.json();
+                
+                let html = `<div class="demo-result">
+                    <strong>Original Message:</strong> ${data.original_message}<br>
+                    <strong>Correct Password:</strong> ${data.correct_password}<br><br>
+                    <strong>Decryption Attempts:</strong><br>`;
+                
+                data.results.forEach(result => {
+                    const status = result.is_correct ? '✅ CORRECT' : '❌ WRONG';
+                    html += `<div style="margin: 5px 0; padding: 8px; background: rgba(255,255,255,0.1); border-radius: 4px;">
+                        ${status} - Password: "${result.password}" → Result: "${result.decrypted}"
+                    </div>`;
+                });
+                
+                html += `</div><div class="demo-result" style="margin-top: 10px;">
+                    <strong>🎯 Key Insight:</strong> ${data.explanation}
+                </div>`;
+                
+                document.getElementById('demoResult').innerHTML = html;
+            } catch (error) {
+                showResult('demoResult', 'Error running demo: ' + error.message, true);
+            }
+        }
+        
+        async function analyzeDistributions() {
+            try {
+                const response = await fetch('/analyze');
+                const data = await response.json();
+                
+                let html = `<div class="result">
+                    <h3>Credit Card DTE Analysis:</h3>
+                    <p>Total cards: ${data.credit_card.message_count}</p>
+                    <p>Visa percentage: ${data.credit_card.visa_percentage.toFixed(1)}%</p>
+                    <p>Mastercard percentage: ${data.credit_card.mastercard_percentage.toFixed(1)}%</p>
+                    <p>Sample cards: ${data.credit_card.sample_cards.slice(0, 3).join(', ')}...</p>
+                    
+                    <h3 style="margin-top: 15px;">Password DTE Analysis:</h3>
+                    <p>Total passwords: ${data.password.message_count}</p>
+                    <p>Entropy: ${data.password.entropy_estimate.toFixed(2)} bits</p>
+                    <p>Top passwords: ${data.password.top_passwords.slice(0, 3).map(p => `${p[0]} (${(p[1]*100).toFixed(1)}%)`).join(', ')}</p>
+                    
+                    <h3 style="margin-top: 15px;">Biometric DTE Analysis:</h3>
+                    <p>Total templates: ${data.biometric.message_count}</p>
+                    <p>Template length: ${data.biometric.template_length} bits</p>
+                    <p>Sample: ${data.biometric.sample_templates[0].substring(0, 20)}...</p>
+                </div>`;
+                
+                document.getElementById('analysisResult').innerHTML = html;
+            } catch (error) {
+                showResult('analysisResult', 'Error analyzing distributions: ' + error.message, true);
+            }
+        }
+    </script>
+</body>
+</html>
